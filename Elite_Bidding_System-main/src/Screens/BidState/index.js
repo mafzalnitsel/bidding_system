@@ -5,7 +5,6 @@ import { ImArrowRight } from "react-icons/im";
 import {
   Loader,
   CustomSelect,
-  // TableCustomStyle,
   Header,
   fixedtablediv,
   fixedtableheader,
@@ -45,12 +44,10 @@ function Bidding() {
 
   const tableHeaders = [
     "Serial No.",
-    // "BOQ No",
     "BOQ Code",
     "BOQ Description",
     "UoM Client",
     "Quantity Client",
-    // "Conversion",
     "Unit System",
     "Quantity System",
     "ManHours",
@@ -83,40 +80,14 @@ function Bidding() {
     "Selling Price",
   ];
 
-  // console.log(tableHeaders);
-
-  useEffect(() => {
-    console.clear();
-    // setTimeout(() => {
-    //   setLoading(false);
-    // }, 4000);
-    let cook = localStorage.getItem("cookie");
-    if (cook) {
-      // TableTaxCode(cook);
-      // materialpackage(cook);
-      // consumablepackage(cook);
-      // equipmentpackage(cook);
-      // specializedpackage(cook);
-      getunitofmeasure(cook);
-      if (uomlist && uomlist?.length > 0) {
-        getAllOBEDItems(cook);
-      }
-    }
-  }, []);
-
-  // check index of field in tableHeaders
+  // Check index of field in tableHeaders
   const checkIndex = (item) => {
-    return tableHeaders.findIndex((header) => header == item);
+    return tableHeaders.findIndex((header) => header === item);
   };
 
-  // console.log(tableHeaders);
   function convertToNumber(str) {
     if (typeof str !== "string") return NaN;
-
-    // Remove commas from the string
     const cleanedStr = str.replace(/,/g, "");
-
-    // Convert the cleaned string to a number
     return parseFloat(cleanedStr);
   }
 
@@ -131,9 +102,7 @@ function Bidding() {
       { FW: checkIndex("Formwork Package") },
       { LT: checkIndex("Lab Test Package") },
     ];
-    // console.log(packageInfo);F
 
-    // const packageCostInfo = [{ M: 15 }, { C: 16 }, { E: 17 }, { S: 18 }];
     const packageCostInfo = [
       { M: checkIndex("Material Unit Rate") },
       { C: checkIndex("Consumable Unit Rate") },
@@ -152,35 +121,21 @@ function Bidding() {
       })
       .then(function (res) {
         console.log("getAllOBEDItems", res.data);
-        // settabledetails(res.data);
         if (res.data.value) {
           res.data.value?.forEach((item) => {
             const tableData = item.BED1Collection;
-            // console.log({ packageData });
             tableData.forEach((table_item) => {
-              // console.log({ table_item });
-
               if (table_item.U_Type) {
                 settabledetails((prevDetails) => {
                   if (prevDetails) {
                     prevDetails.forEach((details, index) => {
                       if (details) {
-                        if (details[1] == table_item.Code) {
-                          // const unitRate = Number.parseFloat(item.U_DocTotal);
-                          // prevDetails[index][20] = Number.isNaN(unitRate)
-                          //   ? 0
-                          //   : unitRate??.toFixed(2);
-
-                          // prevDetails[index][checkIndex("Conversion")] =
-                          //   item.U_Conversion;
-
+                        if (details[checkIndex("BOQ Code")] == table_item.Code) {
                           prevDetails[index][checkIndex("Unit System")] =
                             uomlist.find((list) => list.value == item.U_Unit)
                               ?.label || item.U_Unit;
 
-                          //   console.log("yese brosd fsjdfhsdlgsdj");
                           const type = table_item.U_Type;
-                          //   console.log({ type });
                           const selectedIndex = packageInfo.find((info) => {
                             const key = Object.keys(info)[0];
                             return key == type;
@@ -193,27 +148,8 @@ function Bidding() {
                             }
                           )?.[type];
 
-                          //   console.log({ selectedIndex, prev: "key" });
                           if (selectedIndex) {
-                            if (prevDetails[index][selectedIndex]) {
-                              //   prevDetails[index][selectedIndex] = prevDetails[
-                              //     index
-                              //   ][selectedIndex]?.includes(table_item.U_Package)
-                              //     ? `${prevDetails[index][selectedIndex]}`
-                              //     : `${prevDetails[index][selectedIndex]}, ${table_item.U_Package}`;
-                            } else {
-                              // console.log({ selectedIndex });
-
-                              prevDetails[index][selectedIndex] = table_item;
-
-                              // `${
-                              //   table_item.U_Package
-                              // } ${
-                              //   table_item.U_PackageName
-                              //     ? " - " + table_item.U_PackageName
-                              //     : ""
-                              // }`;
-                            }
+                            prevDetails[index][selectedIndex] = table_item;
                           }
 
                           if (selectedCostIndex) {
@@ -235,7 +171,6 @@ function Bidding() {
 
                   if (prevDetails) {
                     prevDetails.forEach((item, index) => {
-                      // Extract and parse all required values for the current row
                       const Quantity_Client = parseFloat(
                         item[checkIndex("Quantity Client")]
                       );
@@ -251,15 +186,11 @@ function Bidding() {
                           item[checkIndex("Equipment Unit Rate")]
                         );
                         const Specialized = parseFloat(
-                          item[
-                          checkIndex("Specialized/ Sub-Contract Unit Rate")
-                          ]
+                          item[checkIndex("Specialized/ Sub-Contract Unit Rate")]
                         );
-
                         const Labour = parseFloat(
                           item[checkIndex("Labour Unit Rate")]
                         );
-
                         const Formwork = parseFloat(
                           item[checkIndex("Formwork Unit Rate")]
                         );
@@ -270,14 +201,11 @@ function Bidding() {
                         const Material_Multiplier =
                           Quantity_Client * (isNaN(Material) ? 0 : Material);
                         const Comsumable_Multiplier =
-                          Quantity_Client *
-                          (isNaN(Comsumable) ? 0 : Comsumable);
+                          Quantity_Client * (isNaN(Comsumable) ? 0 : Comsumable);
                         const Equipment_Multiplier =
                           Quantity_Client * (isNaN(Equipment) ? 0 : Equipment);
                         const Specialized_Multiplier =
-                          Quantity_Client *
-                          (isNaN(Specialized) ? 0 : Specialized);
-
+                          Quantity_Client * (isNaN(Specialized) ? 0 : Specialized);
                         const Labour_Multiplier =
                           Quantity_Client * (isNaN(Labour) ? 0 : Labour);
                         const Formwork_Multiplier =
@@ -306,7 +234,6 @@ function Bidding() {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         });
-
                         prevDetails[index][checkIndex("Labour Cost")] =
                           Labour_Multiplier?.toLocaleString("en-US", {
                             minimumFractionDigits: 2,
@@ -323,26 +250,14 @@ function Bidding() {
                             maximumFractionDigits: 2,
                           });
 
-                        const Material_Unit_Rate = isNaN(Material)
-                          ? 0
-                          : Material;
-                        const Comsumable_Unit_Rate = isNaN(Comsumable)
-                          ? 0
-                          : Comsumable;
-                        const Equipment_Unit_Rate = isNaN(Equipment)
-                          ? 0
-                          : Equipment;
-                        const Specialized_Unit_Rate = isNaN(Specialized)
-                          ? 0
-                          : Specialized;
-
+                        const Material_Unit_Rate = isNaN(Material) ? 0 : Material;
+                        const Comsumable_Unit_Rate = isNaN(Comsumable) ? 0 : Comsumable;
+                        const Equipment_Unit_Rate = isNaN(Equipment) ? 0 : Equipment;
+                        const Specialized_Unit_Rate = isNaN(Specialized) ? 0 : Specialized;
                         const Labour_Unit_Rate = isNaN(Labour) ? 0 : Labour;
-                        const Formwork_Unit_Rate = isNaN(Formwork)
-                          ? 0
-                          : Formwork;
+                        const Formwork_Unit_Rate = isNaN(Formwork) ? 0 : Formwork;
                         const LabTest_Unit_Rate = isNaN(LabTest) ? 0 : LabTest;
 
-                        // Calculate the total for the current row
                         const itemTotal =
                           Material_Unit_Rate +
                           Comsumable_Unit_Rate +
@@ -358,7 +273,6 @@ function Bidding() {
                             maximumFractionDigits: 2,
                           });
 
-                        // Update the "Direct Cost" field for the current row
                         prevDetails[index][checkIndex("Direct Cost")] = (
                           itemTotal * Quantity_Client
                         )?.toLocaleString("en-US", {
@@ -392,8 +306,6 @@ function Bidding() {
                       }),
                     }));
                   }
-                  // console.log({ prevDetails });
-
                   return prevDetails;
                 });
               }
@@ -423,7 +335,6 @@ function Bidding() {
 
   const getunitofmeasure = async (cook) => {
     setLoading(true);
-    // -------------------------    Items API GET DATA   ------------------------------------------------------
     let SAPApi = `UnitOfMeasurements?$select=Code,Name,AbsEntry`;
     await axios
       .post(API_TYPES.GET, {
@@ -456,6 +367,7 @@ function Bidding() {
   const handleClose3 = () => {
     setShow3(false);
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -465,25 +377,20 @@ function Bidding() {
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
 
-      // Convert the sheet to JSON, keeping empty cells as empty strings
       const jsonData = XLSX.utils.sheet_to_json(sheet, {
-        header: 1, // Keep it as an array of arrays
-        defval: "", // Ensure empty cells are kept as empty strings
+        header: 1,
+        defval: "",
       });
 
-      // Find the index of the row where the first column contains "Sr.No"
       const srNoRowIndex = jsonData.findIndex((row) => row[0] === "S No");
 
-      // If "Sr.No" row is found, slice the data from the next row onward
       let filteredDataArray = [];
       if (srNoRowIndex !== -1) {
         filteredDataArray = jsonData?.slice(srNoRowIndex + 1);
       } else {
-        // If "Sr.No" is not found, use the original data
         filteredDataArray = jsonData;
       }
 
-      // Optional: Further filter out rows that are completely empty
       filteredDataArray = filteredDataArray.filter((row) =>
         row.some((cell) => cell !== "")
       );
@@ -503,7 +410,6 @@ function Bidding() {
 
   const getvaluefromselect = (e, name) => {
     let data = headerdata;
-    // data[name] = e.item?.VatGroups_Lines[0]?.Rate
     data[name] = e.value;
     setheaderdata(data);
   };
@@ -512,49 +418,9 @@ function Bidding() {
     console.log("tabledetails", tabledetails);
     console.log("headerdata", headerdata);
     let details = [];
-    // tabledetails.forEach((item) => {
-    //   details.push({
-    //     U_BOQNo: item.U_BOQNo,
-    //     U_QuantityClient: item.Quantity_Client,
-    //     U_Conversion: item.Conversion,
-    //     U_UnitSystem: item.Unit_System,
-    //     U_QuantitySystem: item.Quantity_System,
-    //     U_MaterialPackage: item.Material_Package,
-    //     U_ConsumablePackage: item.Consumable_Package,
-    //     U_EquipmentPackage: item.Equipment_Package,
-    //     U_ManHoursLabour: item.ManHours_Labour,
-    //     U_SubContractorLabour: item.SubContractor_Labour,
-    //     U_PackageMaterial: item.Package_Material,
-    //     U_SubContractorMaterial: item.SubContractor_Material,
-    //     U_PackageConsumable: item.Package_Consumable,
-    //     U_SubContractorConsumable: item.SubContractor_Consumable,
-    //     U_PackageEquipment: item.Package_Equipment,
-    //     U_SubContractorEquipment: item.SubContractor_Equipment,
-    //     U_DirectCost: item.Direct_Cost,
-    //     U_SiteOverheads: item.Site_Overheads,
-    //     U_Profit: item.Profit,
-    //     U_PST: item.PST,
-    //   });
-    // });
-    // let body = {
-    // U_QuotationNo: headerdata?. null,
-    // U_ClientName: headerdata?.clientname,
-    // U_ContractType: headerdata?.Contracttype,
-    // U_ConstructionPeriod: headerdata?.constructionperiod,
-    // U_FurnishedMaterial: headerdata?.FurnishedMaterial,
-    // U_Escalation: headerdata?.Escalation,
-    // U_SiteOverHeads: headerdata?.siteoverheads,
-    // U_ReceivedDate: headerdata?.receiveddate,
-    // U_SubmissionDate: headerdata?.submissiondate,
-    // U_Profit: headerdata?.profit,
-    // U_PST: headerdata?.PST,
-    // U_IncomeTax: headerdata?.incomtax,
-    // U_ProjectLocation: headerdata?.location,
-    //   EBS1Collection: details,
-    // };
-    // console.log("body", body);
-    // PostInFirstDB(body);
+    // Add submit logic as needed
   };
+
   const PostInFirstDB = async (body) => {
     let cook = await localStorage.getItem("cookie");
     if (cook) {
@@ -581,7 +447,6 @@ function Bidding() {
   };
 
   const getmpvalues = (e, index, clientqty, ManHours) => {
-    // ((item.U_UnitFactor + (item.U_UnitFactor * item.U_Wastage / 100)) * selectedMP?.ClientQty)?.toFixed(2) * Number(item.UnitRate || 1)
     let data = selectedMP;
     data.item.MMP1Collection[index]["UnitRate"] = e.target.value;
     let unitrate = data.item.MMP1Collection[index]["UnitRate"];
@@ -599,53 +464,50 @@ function Bidding() {
       }
     });
     data.item["DocTotal"] = sum;
-    tabledetails[data.ParentIndex]["MPRate"] = sum;
-    tabledetails[data.ParentIndex]["DirectCost"] = Number(
+    tabledetails[data.ParentIndex][checkIndex("Material Unit Rate")] = sum;
+    tabledetails[data.ParentIndex][checkIndex("Direct Cost")] = Number(
       Number(sum + ManHours)?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["SiteOverHeades"] = Number(
-      (tabledetails[data.ParentIndex]["DirectCost"] * 0.2)?.toFixed(2)
+      (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] * 0.2)?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["HeadOfficeOverHeads"] = Number(
       (
-        (tabledetails[data.ParentIndex]["DirectCost"] +
+        (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] +
           tabledetails[data.ParentIndex]["SiteOverHeades"]) *
         0.1
       )?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["Escalation"] = Number(
       (
-        (tabledetails[data.ParentIndex]["DirectCost"] +
+        (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] +
           tabledetails[data.ParentIndex]["HeadOfficeOverHeads"]) *
         0.1
       )?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["Unforeseen"] = Number(
       (
-        (tabledetails[data.ParentIndex]["DirectCost"] +
+        (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] +
           tabledetails[data.ParentIndex]["Escalation"]) *
         0.05
       )?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["Contingencies"] = Number(
       (
-        (tabledetails[data.ParentIndex]["DirectCost"] +
+        (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] +
           tabledetails[data.ParentIndex]["Unforeseen"]) *
         0.03
       )?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["Profit"] = Number(
-      (tabledetails[data.ParentIndex]["DirectCost"] * 0.05)?.toFixed(2)
+      (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] * 0.05)?.toFixed(2)
     );
     setselectedMP(data);
   };
 
   const handlePackageItemModal = async (id, name, packageItem) => {
     setLoading(true);
-
     let cook = localStorage.getItem("cookie");
-    // let SAPApi = `OBED?$filter=Code eq '${id}' and U_Type eq '${name}'`;
-
     let SAPApi;
     if (packageItem || name) {
       SAPApi = `OMMP?$filter=Code eq '${id}' and U_Type eq '${name}'`;
@@ -654,23 +516,18 @@ function Bidding() {
       SAPApi = `OBED?$filter=Code eq '${id}'`;
       setModalType("OBED");
     }
-    console.log({ SAPApi });
     await axios
       .post(API_TYPES.GET, {
         api: SAPApi,
         cookie: cook,
       })
       .then(function (res) {
-        console.log("handlePackageItemModal", { packageItem }, res.data);
-
         if (res.data.value) {
           if (res.data.value?.length === 0) {
             alert.error(
-              `Nothing Found with '${id}' Code ${name ? "and Type '" + name + "'" : ""
-              }`
+              `Nothing Found with '${id}' Code ${name ? "and Type '" + name + "'" : ""}`
             );
           } else {
-            console.log("handlePackageItemModal", res.data);
             setPackageData(res.data.value[0]);
             setIsOpen(true);
           }
@@ -692,29 +549,23 @@ function Bidding() {
         setLoading(false);
       })
       .catch(function (error) { });
-
-    setLoading(false);
   };
 
   const truncateLine = (value) => {
-    if (typeof value !== 'string' || !value)
-      return
-    const len = value.length
-    if (len < 20)
-      return value
-    else
-      return `${value?.slice(0, 20)} ...`
-  }
-
+    if (typeof value !== 'string' || !value) return;
+    const len = value.length;
+    if (len < 20) return value;
+    else return `${value?.slice(0, 20)} ...`;
+  };
 
   const getTableInputValue = (e, index) => {
     console.log(e.target.value, index);
-  }
+  };
 
   useEffect(() => {
-    const data = Array.from({ length: tableHeaders.length }).map(() => "")
-    settabledetails([data])
-  }, [])
+    const data = Array.from({ length: tableHeaders.length }).map(() => "");
+    settabledetails([data]);
+  }, []);
 
   return (
     <>
@@ -848,7 +699,6 @@ function Bidding() {
             <Select
               menuPortalTarget={document.body}
               styles={CustomSelect}
-              // options={TaxCodelist}
               onChange={(e) => getvaluefromselect(e, "PST")}
               options={[
                 { label: "Sindh 13%", value: 13 },
@@ -864,7 +714,6 @@ function Bidding() {
             <input
               defaultValue={headerdata?.incomtax + "%"}
               type="input"
-              // options={TaxCodelist}
               onChange={(e) => getvaluefrominput(e)}
               name="incomtax"
               readOnly
@@ -892,7 +741,7 @@ function Bidding() {
           <div className="header_items_container">
             <div className="header_item">
               <input
-                onChange={() => setSubContractMode(prevMode => !prevMode)}
+                onChange={() => setSubContractMode((prevMode) => !prevMode)}
                 value={subContractMode}
                 name="Contracttype"
                 type="checkbox"
@@ -908,7 +757,7 @@ function Bidding() {
             <Modal.Title>Material Package Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="main_container ">
+            <div className="main_container">
               <div className="left">
                 <div className="header_items_container">
                   <label>Material Package Code</label>
@@ -995,23 +844,18 @@ function Bidding() {
                           <div className="inside_td">{index + 1}</div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">{item.U_MTCode}</div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">{item.U_Unit}</div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">{item.U_UnitFactor}</div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">{item.U_Wastage}</div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">
                             {(
                               (item.U_UnitFactor +
@@ -1021,9 +865,7 @@ function Bidding() {
                           </div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">
-                            {" "}
                             <input
                               onChange={(e) =>
                                 getmpvalues(
@@ -1041,7 +883,6 @@ function Bidding() {
                           </div>
                         </td>
                         <td>
-                          {" "}
                           <div className="inside_td">{item.LineTotal}</div>
                         </td>
                       </tr>
@@ -1104,15 +945,15 @@ function Bidding() {
                   </td>
                   <td>
                     <div className="inside_td">
-                      {item[1] && (
+                      {item[checkIndex("BOQ Code")] && (
                         <ImArrowRight
                           style={{ cursor: "pointer", marginRight: "6px" }}
                           onClick={() => {
-                            handlePackageItemModal(item[1]);
+                            handlePackageItemModal(item[checkIndex("BOQ Code")]);
                           }}
                         />
                       )}
-                      <span>{item[1]}</span>
+                      <span>{item[checkIndex("BOQ Code")]}</span>
                     </div>
                   </td>
                   <td>
@@ -1123,55 +964,60 @@ function Bidding() {
                         whiteSpace: "",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        cursor: "pointer"
+                        cursor: "pointer",
                       }}
-                      onClick={() => window.alert(item[2])}
-                      title={item[2]}
+                      onClick={() => window.alert(item[checkIndex("BOQ Description")])}
+                      title={item[checkIndex("BOQ Description")]}
                     >
-                      {truncateLine(item[2])}
+                      {truncateLine(item[checkIndex("BOQ Description")])}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[3]}</div>
+                    <div className="inside_td">{item[checkIndex("UoM Client")]}</div>
                   </td>
                   <td>
                     <div className="inside_td">
-                      {item[4] ? item[4]?.toFixed(2) : null}
+                      {item[checkIndex("Quantity Client")] ? item[checkIndex("Quantity Client")]?.toFixed(2) : null}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[5]}</div>
+                    <div className="inside_td">{item[checkIndex("Unit System")]}</div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[6]}</div>
-                  </td>
-                  < td >
                     <div className="inside_td">
-                      {item[7] ? item[7]?.toFixed(2) : null}
+                      {item[checkIndex("Quantity System")] ? item[checkIndex("Quantity System")]?.toFixed(2) : null}
                     </div>
                   </td>
-                  <td>{item[8]}</td>
+                  <td>
+                    <div className="inside_td">{item[checkIndex("ManHours")]}</div>
+                  </td>
+                  <td>
+                    <div className="inside_td">{item[checkIndex("Rate ManHours")]}</div>
+                  </td>
                   <td>
                     <div className="inside_td">
                       {item[checkIndex("SubContractor Labour")] ? item[checkIndex("SubContractor Labour")]?.toFixed(2) : null}
-                      <div className="inside_td">
-                        <input
-                          type="text"
-                          disabled={!subContractMode}
-                          value={item[8] || ""}
-                          onChange={(e) =>
-                            // tablegetvaluefrominput(e, index, "text")
-                            getTableInputValue(e, checkIndex("SubContractor Labour"))
-                          }
-                          name="value"
-                          className="form-control"
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        disabled={!subContractMode}
+                        value={item[checkIndex("SubContractor Labour")] || ""}
+                        onChange={(e) =>
+                          getTableInputValue(e, checkIndex("SubContractor Labour"))
+                        }
+                        name="value"
+                        className="form-control"
+                      />
                     </div>
                   </td>
                   <td>
                     {item[checkIndex("Material Package")]?.U_Package && (
-                      <div className="inside_td" style={{ justifyContent: "left", padding: "2px 6px" }} title={item[checkIndex("Material Package")]?.U_PackageName || item[checkIndex("Material Package")]?.U_Package}
+                      <div
+                        className="inside_td"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Material Package")]?.U_PackageName ||
+                          item[checkIndex("Material Package")]?.U_Package
+                        }
                       >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
@@ -1184,16 +1030,24 @@ function Bidding() {
                           }}
                         />
                         <div>
-                          {truncateLine(item[checkIndex("Material Package")]?.U_PackageName || item[checkIndex("Material Package")]?.U_Package)}
+                          {truncateLine(
+                            item[checkIndex("Material Package")]?.U_PackageName ||
+                            item[checkIndex("Material Package")]?.U_Package
+                          )}
                         </div>
                       </div>
                     )}
-
                   </td>
                   <td>
                     {item[checkIndex("Consumable Package")]?.U_Package && (
-                      <div title={item[checkIndex("Consumable Package")]?.U_PackageName || item[checkIndex("Consumable Package")]?.U_Package}
-                        className="inside_td text-center" style={{ justifyContent: "left", padding: "2px 6px" }}>
+                      <div
+                        className="inside_td text-center"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Consumable Package")]?.U_PackageName ||
+                          item[checkIndex("Consumable Package")]?.U_Package
+                        }
+                      >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
                           onClick={() => {
@@ -1204,13 +1058,22 @@ function Bidding() {
                             );
                           }}
                         />
-                        {truncateLine(item[checkIndex("Consumable Package")]?.U_PackageName || item[checkIndex("Consumable Package")]?.U_Package)}
+                        {truncateLine(
+                          item[checkIndex("Consumable Package")]?.U_PackageName ||
+                          item[checkIndex("Consumable Package")]?.U_Package
+                        )}
                       </div>
                     )}
                   </td>
                   <td>
                     {item[checkIndex("Equipment Package")]?.U_Package && (
-                      <div className="inside_td text-center" style={{ justifyContent: "left", padding: "2px 6px" }} title={item[checkIndex("Equipment Package")]?.U_PackageName || item[checkIndex("Equipment Package")]?.U_Package}
+                      <div
+                        className="inside_td text-center"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Equipment Package")]?.U_PackageName ||
+                          item[checkIndex("Equipment Package")]?.U_Package
+                        }
                       >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
@@ -1222,13 +1085,22 @@ function Bidding() {
                             );
                           }}
                         />
-                        {truncateLine(item[checkIndex("Equipment Package")]?.U_PackageName || item[checkIndex("Equipment Package")]?.U_Package)}
+                        {truncateLine(
+                          item[checkIndex("Equipment Package")]?.U_PackageName ||
+                          item[checkIndex("Equipment Package")]?.U_Package
+                        )}
                       </div>
                     )}
                   </td>
                   <td>
                     {item[checkIndex("Specialized/ Sub-Contract")]?.U_Package && (
-                      <div className="inside_td" style={{ justifyContent: "left", padding: "2px 6px" }} title={item[checkIndex("Specialized/ Sub-Contract")]?.U_PackageName || item[checkIndex("Specialized/ Sub-Contract")]?.U_Package}
+                      <div
+                        className="inside_td"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Specialized/ Sub-Contract")]?.U_PackageName ||
+                          item[checkIndex("Specialized/ Sub-Contract")]?.U_Package
+                        }
                       >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
@@ -1240,13 +1112,22 @@ function Bidding() {
                             );
                           }}
                         />
-                        {truncateLine(item[checkIndex("Specialized/ Sub-Contract")]?.U_PackageName || item[checkIndex("Specialized/ Sub-Contract")]?.U_Package)}
+                        {truncateLine(
+                          item[checkIndex("Specialized/ Sub-Contract")]?.U_PackageName ||
+                          item[checkIndex("Specialized/ Sub-Contract")]?.U_Package
+                        )}
                       </div>
                     )}
                   </td>
                   <td>
                     {item[checkIndex("Labour Package")]?.U_Package && (
-                      <div className="inside_td" style={{ justifyContent: "left", padding: "2px 6px" }} title={item[checkIndex("Labour Package")]?.U_PackageName || item[checkIndex("Labour Package")]?.U_Package}
+                      <div
+                        className="inside_td"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Labour Package")]?.U_PackageName ||
+                          item[checkIndex("Labour Package")]?.U_Package
+                        }
                       >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
@@ -1258,13 +1139,23 @@ function Bidding() {
                             );
                           }}
                         />
-                        {truncateLine(item[checkIndex("Labour Package")]?.U_PackageName || item[checkIndex("Labour Package")]?.U_Package)}
+                        {truncateLine(
+                          item[checkIndex("Labour Package")]?.U_PackageName ||
+                          item[checkIndex("Labour Package")]?.U_Package
+                        )}
                       </div>
                     )}
                   </td>
                   <td>
                     {item[checkIndex("Formwork Package")]?.U_Package && (
-                      <div className="inside_td" style={{ justifyContent: "left", padding: "2px 6px" }}>
+                      <div
+                        className="inside_td"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Formwork Package")]?.U_PackageName ||
+                          item[checkIndex("Formwork Package")]?.U_Package
+                        }
+                      >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
                           onClick={() => {
@@ -1275,13 +1166,23 @@ function Bidding() {
                             );
                           }}
                         />
-                        {truncateLine(item[checkIndex("Formwork Package")]?.U_PackageName || item[checkIndex("Formwork Package")]?.U_Package)}
+                        {truncateLine(
+                          item[checkIndex("Formwork Package")]?.U_PackageName ||
+                          item[checkIndex("Formwork Package")]?.U_Package
+                        )}
                       </div>
                     )}
                   </td>
                   <td>
                     {item[checkIndex("Lab Test Package")]?.U_Package && (
-                      <div className="inside_td" style={{ justifyContent: "left", padding: "2px 6px" }}>
+                      <div
+                        className="inside_td"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Lab Test Package")]?.U_PackageName ||
+                          item[checkIndex("Lab Test Package")]?.U_Package
+                        }
+                      >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
                           onClick={() => {
@@ -1292,61 +1193,61 @@ function Bidding() {
                             );
                           }}
                         />
-                        {item[checkIndex("Lab Test Package")]?.U_PackageName || item[checkIndex("Lab Test Package")]?.U_Package}
+                        {truncateLine(
+                          item[checkIndex("Lab Test Package")]?.U_PackageName ||
+                          item[checkIndex("Lab Test Package")]?.U_Package
+                        )}
                       </div>
                     )}
                   </td>
-                  <td className="text-right">{item[16]}</td>
-                  <td className="text-right">{item[17]}</td>
-                  <td className="text-right">{item[18]}</td>
-                  <td className="text-right">{item[19]}</td>
-                  <td className="text-right">{item[20]}</td>
-                  <td className="text-right">{item[21]}</td>
-                  <td className="text-right">{item[22]}</td>
-                  <td className="text-right">{item[23]}</td>
-                  <td className="text-right">{item[24]}</td>
-                  <td className="text-right">{item[25]}</td>
-                  <td className="text-right">{item[26]}</td>
-                  <td className="text-right">{item[27]}</td>
-                  <td className="text-right">{item[28]}</td>
-                  <td className="text-right">{item[29]}</td>
-                  <td className="text-right">{item[30]}</td>
-                  <td className="text-right">{item[31]}</td>
-                  <td className="text-right">{item[32]}</td>
-                  <td className="text-right">{item[33]}</td>
+                  <td className="text-right">{item[checkIndex("Material Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Material Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Consumable Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Consumable Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Equipment Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Equipment Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Specialized/ Sub-Contract Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Specialized/ Sub-Contract Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Labour Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Labour Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Formwork Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Formwork Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Lab Test Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Lab Test Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Unit Rate")]}</td>
+                  <td className="text-right">{item[checkIndex("Direct Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("In-Direct Cost")]}</td>
+                  <td className="text-right">{item[checkIndex("Selling Price")]}</td>
                 </tr>
               ))}
             </tbody>
-          </Table >
+          </Table>
         ) : (
           <Table striped bordered hover>
             <thead style={fixedtableheader}>
               <tr style={{ ...fixedtablerow, background: "#0b9fc8" }}>
-                {tableHeaders?.map(item => <>
+                {tableHeaders?.map((item) => (
                   <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>
                     <div>{item}</div>
                   </th>
-                </>)}
+                ))}
               </tr>
             </thead>
             <tbody>
               {tabledetails &&
-                tabledetails.map((item, index) => {
-                  return (
-                    <tr key={`${index}`}>
-                      {item?.map((subitem) => {
-                        return <td>
-                          <div className="inside_td">{subitem}</div>
-                        </td>
-                      })}
-                    </tr>
-                  )
-                })}
+                tabledetails.map((item, index) => (
+                  <tr key={`${index}`}>
+                    {item?.map((subitem) => (
+                      <td>
+                        <div className="inside_td">{subitem}</div>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
             </tbody>
           </Table>
-        )
-        }
-      </div >
+        )}
+      </div>
       <div className="button_main_container">
         <div>
           <button
@@ -1359,16 +1260,18 @@ function Bidding() {
           </button>
         </div>
         <div>
-          {tabledetails?.length > 0 && tabledetails[0][0] && <button
-            onClick={() =>
-              exportTableToXLSX(
-                "bidding_system_table",
-                "bidding_system_table.xlsx"
-              )
-            }
-          >
-            Export to Excel
-          </button>}
+          {tabledetails?.length > 0 && tabledetails[0][0] && (
+            <button
+              onClick={() =>
+                exportTableToXLSX(
+                  "bidding_system_table",
+                  "bidding_system_table.xlsx"
+                )
+              }
+            >
+              Export to Excel
+            </button>
+          )}
         </div>
       </div>
     </>
