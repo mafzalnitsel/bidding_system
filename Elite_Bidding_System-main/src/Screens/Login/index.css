@@ -1,0 +1,67 @@
+/* Login.css */
+/* // 0b9fc8 blue
+// c32127 red */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #FFFFFF;
+    margin-top: 150px; /* Add top margin for spacing */
+  }
+  .logo {
+    width: 210px;
+    height: 80px;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }  
+  label {
+    margin-top: 10px;
+    text-align: left;
+    font-weight: bold; /* Make labels bold */
+    color: #c32127;
+  }  
+  input {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px; /* Add border-radius for styling */
+  }
+  
+  button {
+    background-color: #0b9fc8;
+    color: white;
+    padding: 10px;
+    border: none;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #c32127;
+  }
+  
+  .eye-icon {
+    position: absolute;
+    top: 10px;
+    left: 172px;
+    cursor: pointer;
+  }
+  

@@ -1,0 +1,78 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.generic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease forwards;
+  /* user-select: none;
+  pointer-events: none; */
+}
+
+.generic-modal-overlay .genric-modal {
+  /* user-select: all;
+  pointer-events: all; */
+  position: relative;
+  /* z-index: 100; */
+  overflow: auto;
+  margin: 0 auto;
+  width: 100%;
+  animation: fadeIn 0.3s ease;
+}
+
+.generic-modal-overlay .generic-modal-close-button {
+  position: sticky;
+  top: 5px;
+  z-index: 100;
+  display: flex;
+  justify-content: right;
+}
+
+.generic-modal-overlay .generic-modal-close-button span {
+  padding: 4px;
+  border-radius: 100%;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.generic-modal-overlay .generic-modal-close-button span:hover {
+  background-color: #eee;
+}
+
+.generic-modal-overlay .main-title {
+  text-align: center;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.scale-down {
+  animation: scale-down 0.3s ease-out forwards;
+}
+
+@keyframes scale-down {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}

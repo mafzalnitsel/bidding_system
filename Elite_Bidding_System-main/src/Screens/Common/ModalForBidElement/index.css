@@ -1,0 +1,9 @@
+[class~="-MenuPortal"] {
+  position: fixed !important;
+  z-index: 10000 !important;
+}
+
+.modal-select-option {
+  position: relative;
+  z-index: 1000;
+}
