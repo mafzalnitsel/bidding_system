@@ -49,6 +49,7 @@ function Bidding() {
     "BOQ Description",
     "Unit Client",
     "Quantity Client",
+    "Conversion",
     "Unit System",
     "Quantity System",
     "Standard ManHours",
@@ -79,10 +80,8 @@ function Bidding() {
     "Direct Cost",
     "In-Direct Cost",
     "Selling Price",
-    "Amount",
+    // "Amount",
   ];
-
-
 
   useEffect(() => {
     console.clear();
@@ -102,7 +101,6 @@ function Bidding() {
       }
     }
   }, []);
-
 
   // Check index of field in tableHeaders
   const checkIndex = (item) => {
@@ -154,7 +152,13 @@ function Bidding() {
                   if (prevDetails) {
                     prevDetails.forEach((details, index) => {
                       if (details) {
-                        if (details[checkIndex("BOQ Client Number")] == table_item.Code) {
+                        if (
+                          details[checkIndex("BOQ Client Number")] ==
+                          table_item.Code
+                        ) {
+                          prevDetails[index][checkIndex("Conversion")] =
+                            item.U_Conversion;
+
                           prevDetails[index][checkIndex("Unit System")] =
                             uomlist.find((list) => list.value == item.U_Unit)
                               ?.label || item.U_Unit;
@@ -209,7 +213,9 @@ function Bidding() {
                           item[checkIndex("Equipment Unit Rate")]
                         );
                         const Specialized = parseFloat(
-                          item[checkIndex("Specialized/ Sub-Contract Unit Rate")]
+                          item[
+                            checkIndex("Specialized/ Sub-Contract Unit Rate")
+                          ]
                         );
                         const Labour = parseFloat(
                           item[checkIndex("Labour Unit Rate")]
@@ -224,11 +230,13 @@ function Bidding() {
                         const Material_Multiplier =
                           Quantity_Client * (isNaN(Material) ? 0 : Material);
                         const Comsumable_Multiplier =
-                          Quantity_Client * (isNaN(Comsumable) ? 0 : Comsumable);
+                          Quantity_Client *
+                          (isNaN(Comsumable) ? 0 : Comsumable);
                         const Equipment_Multiplier =
                           Quantity_Client * (isNaN(Equipment) ? 0 : Equipment);
                         const Specialized_Multiplier =
-                          Quantity_Client * (isNaN(Specialized) ? 0 : Specialized);
+                          Quantity_Client *
+                          (isNaN(Specialized) ? 0 : Specialized);
                         const Labour_Multiplier =
                           Quantity_Client * (isNaN(Labour) ? 0 : Labour);
                         const Formwork_Multiplier =
@@ -273,12 +281,22 @@ function Bidding() {
                             maximumFractionDigits: 2,
                           });
 
-                        const Material_Unit_Rate = isNaN(Material) ? 0 : Material;
-                        const Comsumable_Unit_Rate = isNaN(Comsumable) ? 0 : Comsumable;
-                        const Equipment_Unit_Rate = isNaN(Equipment) ? 0 : Equipment;
-                        const Specialized_Unit_Rate = isNaN(Specialized) ? 0 : Specialized;
+                        const Material_Unit_Rate = isNaN(Material)
+                          ? 0
+                          : Material;
+                        const Comsumable_Unit_Rate = isNaN(Comsumable)
+                          ? 0
+                          : Comsumable;
+                        const Equipment_Unit_Rate = isNaN(Equipment)
+                          ? 0
+                          : Equipment;
+                        const Specialized_Unit_Rate = isNaN(Specialized)
+                          ? 0
+                          : Specialized;
                         const Labour_Unit_Rate = isNaN(Labour) ? 0 : Labour;
-                        const Formwork_Unit_Rate = isNaN(Formwork) ? 0 : Formwork;
+                        const Formwork_Unit_Rate = isNaN(Formwork)
+                          ? 0
+                          : Formwork;
                         const LabTest_Unit_Rate = isNaN(LabTest) ? 0 : LabTest;
 
                         const itemTotal =
@@ -351,7 +369,7 @@ function Bidding() {
       .finally(() => {
         setLoading(false);
       })
-      .catch(function (error) { });
+      .catch(function (error) {});
 
     setLoading(false);
   };
@@ -377,7 +395,7 @@ function Bidding() {
           setLoading(false);
         }
       })
-      .catch(function (error) { })
+      .catch(function (error) {})
       .finally(() => {
         setLoading(false);
       });
@@ -494,7 +512,9 @@ function Bidding() {
       Number(sum + ManHours)?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["SiteOverHeades"] = Number(
-      (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] * 0.2)?.toFixed(2)
+      (
+        tabledetails[data.ParentIndex][checkIndex("Direct Cost")] * 0.2
+      )?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["HeadOfficeOverHeads"] = Number(
       (
@@ -525,7 +545,9 @@ function Bidding() {
       )?.toFixed(2)
     );
     tabledetails[data.ParentIndex]["Profit"] = Number(
-      (tabledetails[data.ParentIndex][checkIndex("Direct Cost")] * 0.05)?.toFixed(2)
+      (
+        tabledetails[data.ParentIndex][checkIndex("Direct Cost")] * 0.05
+      )?.toFixed(2)
     );
     setselectedMP(data);
   };
@@ -550,7 +572,9 @@ function Bidding() {
         if (res.data.value) {
           if (res.data.value?.length === 0) {
             alert.error(
-              `Nothing Found with '${id}' Code ${name ? "and Type '" + name + "'" : ""}`
+              `Nothing Found with '${id}' Code ${
+                name ? "and Type '" + name + "'" : ""
+              }`
             );
           } else {
             setPackageData(res.data.value[0]);
@@ -573,11 +597,11 @@ function Bidding() {
       .finally(() => {
         setLoading(false);
       })
-      .catch(function (error) { });
+      .catch(function (error) {});
   };
 
   const truncateLine = (value) => {
-    if (typeof value !== 'string' || !value) return;
+    if (typeof value !== "string" || !value) return;
     const len = value.length;
     if (len < 20) return value;
     else return `${value?.slice(0, 20)} ...`;
@@ -589,7 +613,9 @@ function Bidding() {
 
   useEffect(() => {
     const data = Array.from({ length: tableHeaders.length }).map(() => "");
-    settabledetails(prev => prev?.length === 0 ? [data] : prev);
+    settabledetails((prev) => {
+      return prev?.length === 0 || !prev ? [data] : prev;
+    });
   }, []);
 
   return (
@@ -974,7 +1000,9 @@ function Bidding() {
                         <ImArrowRight
                           style={{ cursor: "pointer", marginRight: "6px" }}
                           onClick={() => {
-                            handlePackageItemModal(item[checkIndex("BOQ Client Number")]);
+                            handlePackageItemModal(
+                              item[checkIndex("BOQ Client Number")]
+                            );
                           }}
                         />
                       )}
@@ -992,35 +1020,57 @@ function Bidding() {
                         padding: "0 8px",
                         cursor: "pointer",
                         textAlign: "left",
-                        display: "block !important"
+                        display: "block !important",
                       }}
-                      onClick={() => window.alert(item[checkIndex("BOQ Description")])}
+                      onClick={() =>
+                        window.alert(item[checkIndex("BOQ Description")])
+                      }
                       title={item[checkIndex("BOQ Description")]}
                     >
                       {item[checkIndex("BOQ Description")]}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[checkIndex("Unit Client")]}</div>
-                  </td>
-                  <td>
                     <div className="inside_td">
-                      {item[checkIndex("Quantity Client")] ? item[checkIndex("Quantity Client")]?.toFixed(2) : null}
+                      {item[checkIndex("Unit Client")]}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[checkIndex("Unit System")]}</div>
-                  </td>
-                  <td>
                     <div className="inside_td">
-                      {item[checkIndex("Quantity System")] ? typeof item[checkIndex("Quantity System")] === "number" ? item[checkIndex("Quantity System")]?.toFixed(2) : item[checkIndex("Quantity System")] : null}
+                      {item[checkIndex("Quantity Client")]
+                        ? item[checkIndex("Quantity Client")]?.toFixed(2)
+                        : null}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[checkIndex("Standard ManHours")]}</div>
+                    <div className="inside_td">
+                      {item[checkIndex("Conversion")]}
+                    </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[checkIndex("Rate ManHours")]}</div>
+                    <div className="inside_td">
+                      {item[checkIndex("Unit System")]}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="inside_td">
+                      {item[checkIndex("Quantity System")]
+                        ? typeof item[checkIndex("Quantity System")] ===
+                          "number"
+                          ? item[checkIndex("Quantity System")]?.toFixed(2)
+                          : item[checkIndex("Quantity System")]
+                        : null}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="inside_td">
+                      {item[checkIndex("Standard ManHours")]}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="inside_td">
+                      {item[checkIndex("Rate ManHours")]}
+                    </div>
                   </td>
                   {/* <td>
                     <div className="inside_td">
@@ -1059,8 +1109,9 @@ function Bidding() {
                         />
                         <div>
                           {truncateLine(
-                            item[checkIndex("Material Package")]?.U_PackageName ||
-                            item[checkIndex("Material Package")]?.U_Package
+                            item[checkIndex("Material Package")]
+                              ?.U_PackageName ||
+                              item[checkIndex("Material Package")]?.U_Package
                           )}
                         </div>
                       </div>
@@ -1072,7 +1123,8 @@ function Bidding() {
                         className="inside_td text-center"
                         style={{ justifyContent: "left", padding: "2px 6px" }}
                         title={
-                          item[checkIndex("Consumable Package")]?.U_PackageName ||
+                          item[checkIndex("Consumable Package")]
+                            ?.U_PackageName ||
                           item[checkIndex("Consumable Package")]?.U_Package
                         }
                       >
@@ -1087,8 +1139,9 @@ function Bidding() {
                           }}
                         />
                         {truncateLine(
-                          item[checkIndex("Consumable Package")]?.U_PackageName ||
-                          item[checkIndex("Consumable Package")]?.U_Package
+                          item[checkIndex("Consumable Package")]
+                            ?.U_PackageName ||
+                            item[checkIndex("Consumable Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1099,7 +1152,8 @@ function Bidding() {
                         className="inside_td text-center"
                         style={{ justifyContent: "left", padding: "2px 6px" }}
                         title={
-                          item[checkIndex("Equipment Package")]?.U_PackageName ||
+                          item[checkIndex("Equipment Package")]
+                            ?.U_PackageName ||
                           item[checkIndex("Equipment Package")]?.U_Package
                         }
                       >
@@ -1114,35 +1168,42 @@ function Bidding() {
                           }}
                         />
                         {truncateLine(
-                          item[checkIndex("Equipment Package")]?.U_PackageName ||
-                          item[checkIndex("Equipment Package")]?.U_Package
+                          item[checkIndex("Equipment Package")]
+                            ?.U_PackageName ||
+                            item[checkIndex("Equipment Package")]?.U_Package
                         )}
                       </div>
                     )}
                   </td>
                   <td>
-                    {item[checkIndex("Specialized/ Sub-Contract")]?.U_Package && (
+                    {item[checkIndex("Specialized/ Sub-Contract")]
+                      ?.U_Package && (
                       <div
                         className="inside_td"
                         style={{ justifyContent: "left", padding: "2px 6px" }}
                         title={
-                          item[checkIndex("Specialized/ Sub-Contract")]?.U_PackageName ||
-                          item[checkIndex("Specialized/ Sub-Contract")]?.U_Package
+                          item[checkIndex("Specialized/ Sub-Contract")]
+                            ?.U_PackageName ||
+                          item[checkIndex("Specialized/ Sub-Contract")]
+                            ?.U_Package
                         }
                       >
                         <ImArrowRight
                           style={{ cursor: "pointer", paddingRight: "8px" }}
                           onClick={() => {
                             handlePackageItemModal(
-                              item[checkIndex("Specialized/ Sub-Contract")]?.U_Package,
+                              item[checkIndex("Specialized/ Sub-Contract")]
+                                ?.U_Package,
                               "S",
                               true
                             );
                           }}
                         />
                         {truncateLine(
-                          item[checkIndex("Specialized/ Sub-Contract")]?.U_PackageName ||
-                          item[checkIndex("Specialized/ Sub-Contract")]?.U_Package
+                          item[checkIndex("Specialized/ Sub-Contract")]
+                            ?.U_PackageName ||
+                            item[checkIndex("Specialized/ Sub-Contract")]
+                              ?.U_Package
                         )}
                       </div>
                     )}
@@ -1169,7 +1230,7 @@ function Bidding() {
                         />
                         {truncateLine(
                           item[checkIndex("Labour Package")]?.U_PackageName ||
-                          item[checkIndex("Labour Package")]?.U_Package
+                            item[checkIndex("Labour Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1196,7 +1257,7 @@ function Bidding() {
                         />
                         {truncateLine(
                           item[checkIndex("Formwork Package")]?.U_PackageName ||
-                          item[checkIndex("Formwork Package")]?.U_Package
+                            item[checkIndex("Formwork Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1223,30 +1284,66 @@ function Bidding() {
                         />
                         {truncateLine(
                           item[checkIndex("Lab Test Package")]?.U_PackageName ||
-                          item[checkIndex("Lab Test Package")]?.U_Package
+                            item[checkIndex("Lab Test Package")]?.U_Package
                         )}
                       </div>
                     )}
                   </td>
-                  <td className="text-right">{item[checkIndex("Material Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Material Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Consumable Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Consumable Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Equipment Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Equipment Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Specialized/ Sub-Contract Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Specialized/ Sub-Contract Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Labour Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Labour Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Formwork Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Formwork Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Lab Test Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Lab Test Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Unit Rate")]}</td>
-                  <td className="text-right">{item[checkIndex("Direct Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("In-Direct Cost")]}</td>
-                  <td className="text-right">{item[checkIndex("Selling Price")]}</td>
-                  <td className="text-right">{item[checkIndex("Amount")]}</td>
+                  <td className="text-right">
+                    {item[checkIndex("Material Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Material Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Consumable Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Consumable Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Equipment Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Equipment Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Specialized/ Sub-Contract Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Specialized/ Sub-Contract Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Labour Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Labour Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Formwork Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Formwork Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Lab Test Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Lab Test Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Unit Rate")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Direct Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("In-Direct Cost")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Selling Price")]}
+                  </td>
+                  {/* <td className="text-right">{item[checkIndex("Amount")]}</td> */}
                 </tr>
               ))}
             </tbody>
