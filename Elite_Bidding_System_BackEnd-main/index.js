@@ -24,14 +24,16 @@ app.use(bodyparser.urlencoded({ extended: false }));
 const Server = process.env.EEPLLIVESERVER;
 const Server2 = process.env.EEPLSERVER2;
 const ReportServer = process.env.EEPLREPORTSERVER;
-let CompanyDB = process.env.EEPLCOMPANYDBLIVE;
-const SecondCompanyDB = process.env.EEPLCOMPANYDBLIVE;
+let CompanyDB = process.env.EEPLCOMPANYDBTEST;
+const SecondCompanyDB = process.env.EEPLCOMPANYDBTEST;
+// let CompanyDB = process.env.EEPLCOMPANYDBLIVE;
+// const SecondCompanyDB = process.env.EEPLCOMPANYDBLIVE;
 var filePath;
 const databaseslist = [
   { CName: "Al Arqab Trading", DName: "AATLIVE" },
   { CName: "Daneen Buksh Foodstuff Trading LLC", DName: "DBLIVE" },
   { CName: "DBTEST", DName: "DBTEST" },
-  { CName: "EEPLTEST", DName: "EEPLTEST" },
+  { CName: "EEPLTESTT", DName: "EEPLTESTT" },
   { CName: "Elite Engineering Live", DName: "EEPLLIVE" },
   { CName: "Ever Fresh Foodstuff Trading", DName: "EFLIVE" },
   { CName: "GO Live", DName: "GOLIVE" },

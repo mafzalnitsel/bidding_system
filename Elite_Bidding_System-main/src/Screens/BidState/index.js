@@ -44,15 +44,16 @@ function Bidding() {
 
   const tableHeaders = [
     "Serial No.",
-    "BOQ Code",
+    "BOQ Client Number",
+    "Group",
     "BOQ Description",
-    "UoM Client",
+    "Unit Client",
     "Quantity Client",
     "Unit System",
     "Quantity System",
-    "ManHours",
+    "Standard ManHours",
     "Rate ManHours",
-    "SubContractor Labour",
+    // "SubContractor Labour",
     "Material Package",
     "Consumable Package",
     "Equipment Package",
@@ -78,7 +79,30 @@ function Bidding() {
     "Direct Cost",
     "In-Direct Cost",
     "Selling Price",
+    "Amount",
   ];
+
+
+
+  useEffect(() => {
+    console.clear();
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 4000);
+    let cook = localStorage.getItem("cookie");
+    if (cook) {
+      // TableTaxCode(cook);
+      // materialpackage(cook);
+      // consumablepackage(cook);
+      // equipmentpackage(cook);
+      // specializedpackage(cook);
+      getunitofmeasure(cook);
+      if (uomlist && uomlist?.length > 0) {
+        getAllOBEDItems(cook);
+      }
+    }
+  }, []);
+
 
   // Check index of field in tableHeaders
   const checkIndex = (item) => {
@@ -130,11 +154,10 @@ function Bidding() {
                   if (prevDetails) {
                     prevDetails.forEach((details, index) => {
                       if (details) {
-                        if (details[checkIndex("BOQ Code")] == table_item.Code) {
+                        if (details[checkIndex("BOQ Client Number")] == table_item.Code) {
                           prevDetails[index][checkIndex("Unit System")] =
                             uomlist.find((list) => list.value == item.U_Unit)
                               ?.label || item.U_Unit;
-
                           const type = table_item.U_Type;
                           const selectedIndex = packageInfo.find((info) => {
                             const key = Object.keys(info)[0];
@@ -382,6 +405,8 @@ function Bidding() {
         defval: "",
       });
 
+      console.log(jsonData);
+
       const srNoRowIndex = jsonData.findIndex((row) => row[0] === "S No");
 
       let filteredDataArray = [];
@@ -564,7 +589,7 @@ function Bidding() {
 
   useEffect(() => {
     const data = Array.from({ length: tableHeaders.length }).map(() => "");
-    settabledetails([data]);
+    settabledetails(prev => prev?.length === 0 ? [data] : prev);
   }, []);
 
   return (
@@ -945,35 +970,38 @@ function Bidding() {
                   </td>
                   <td>
                     <div className="inside_td">
-                      {item[checkIndex("BOQ Code")] && (
+                      {item[checkIndex("BOQ Client Number")] && (
                         <ImArrowRight
                           style={{ cursor: "pointer", marginRight: "6px" }}
                           onClick={() => {
-                            handlePackageItemModal(item[checkIndex("BOQ Code")]);
+                            handlePackageItemModal(item[checkIndex("BOQ Client Number")]);
                           }}
                         />
                       )}
-                      <span>{item[checkIndex("BOQ Code")]}</span>
+                      <span>{item[checkIndex("BOQ Client Number")]}</span>
                     </div>
                   </td>
                   <td>
+                    <div className="inside_td">{item[checkIndex("Group")]}</div>
+                  </td>
+                  <td>
                     <div
-                      className="inside_td"
                       style={{
-                        maxWidth: "400px",
-                        whiteSpace: "",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        // maxWidth: "400px",
+                        whiteSpace: "nowrap",
+                        padding: "0 8px",
                         cursor: "pointer",
+                        textAlign: "left",
+                        display: "block !important"
                       }}
                       onClick={() => window.alert(item[checkIndex("BOQ Description")])}
                       title={item[checkIndex("BOQ Description")]}
                     >
-                      {truncateLine(item[checkIndex("BOQ Description")])}
+                      {item[checkIndex("BOQ Description")]}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[checkIndex("UoM Client")]}</div>
+                    <div className="inside_td">{item[checkIndex("Unit Client")]}</div>
                   </td>
                   <td>
                     <div className="inside_td">
@@ -985,16 +1013,16 @@ function Bidding() {
                   </td>
                   <td>
                     <div className="inside_td">
-                      {item[checkIndex("Quantity System")] ? item[checkIndex("Quantity System")]?.toFixed(2) : null}
+                      {item[checkIndex("Quantity System")] ? typeof item[checkIndex("Quantity System")] === "number" ? item[checkIndex("Quantity System")]?.toFixed(2) : item[checkIndex("Quantity System")] : null}
                     </div>
                   </td>
                   <td>
-                    <div className="inside_td">{item[checkIndex("ManHours")]}</div>
+                    <div className="inside_td">{item[checkIndex("Standard ManHours")]}</div>
                   </td>
                   <td>
                     <div className="inside_td">{item[checkIndex("Rate ManHours")]}</div>
                   </td>
-                  <td>
+                  {/* <td>
                     <div className="inside_td">
                       {item[checkIndex("SubContractor Labour")] ? item[checkIndex("SubContractor Labour")]?.toFixed(2) : null}
                       <input
@@ -1008,7 +1036,7 @@ function Bidding() {
                         className="form-control"
                       />
                     </div>
-                  </td>
+                  </td> */}
                   <td>
                     {item[checkIndex("Material Package")]?.U_Package && (
                       <div
@@ -1218,6 +1246,7 @@ function Bidding() {
                   <td className="text-right">{item[checkIndex("Direct Cost")]}</td>
                   <td className="text-right">{item[checkIndex("In-Direct Cost")]}</td>
                   <td className="text-right">{item[checkIndex("Selling Price")]}</td>
+                  <td className="text-right">{item[checkIndex("Amount")]}</td>
                 </tr>
               ))}
             </tbody>
