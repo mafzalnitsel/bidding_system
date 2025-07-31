@@ -99,7 +99,7 @@ function BidElement({ propsData }) {
       .finally(() => {
         setLoading(false);
       })
-      .catch(function (error) { });
+      .catch(function (error) {});
   };
 
   const getvaluefrominput = (e) => {
@@ -230,7 +230,7 @@ function BidElement({ propsData }) {
         .finally(() => {
           setLoading(false);
         })
-        .catch(function (error) { });
+        .catch(function (error) {});
       setLoading(false);
     }
   };
@@ -292,7 +292,7 @@ function BidElement({ propsData }) {
         .finally(() => {
           setLoading(false);
         })
-        .catch(function (error) { });
+        .catch(function (error) {});
     }
   };
 
@@ -314,7 +314,7 @@ function BidElement({ propsData }) {
           setLoading(false);
         }
       })
-      .catch(function (error) { })
+      .catch(function (error) {})
       .finally(() => {
         setLoading(false);
       });
@@ -369,7 +369,7 @@ function BidElement({ propsData }) {
           setLoading(false);
         }
       })
-      .catch(function (error) { })
+      .catch(function (error) {})
       .finally(() => {
         setLoading(false);
       });
@@ -419,7 +419,9 @@ function BidElement({ propsData }) {
 
     setdoctotal(getDocTotal(itemData.BED1Collection));
 
-    const items = itemData.BED1Collection.map((item) => {
+    const items = itemData.BED1Collection.map((item, index) => {
+      handleSelectType(item.U_Type, index);
+      handleSelect(item, index, item.U_Type);
       return {
         U_PackRate: item.U_PackRate,
         U_Package: item.U_Package,
@@ -518,7 +520,7 @@ function BidElement({ propsData }) {
       settype(typeValue);
     }
 
-    const filteredObj = data.find(
+    const filteredObj = data?.find(
       (element) => element.Code === item.value || element.U_Type === item.value
     );
 
@@ -527,7 +529,7 @@ function BidElement({ propsData }) {
       updatedItems[index] = {
         ...updatedItems[index],
         U_Package: item.value,
-        U_PackageName: item.label.split(" - ")[1],
+        U_PackageName: item.label?.split(" - ")[1],
         U_PackRate: filteredObj.U_DocTotal,
         U_Type: typeValue,
       };
@@ -541,7 +543,7 @@ function BidElement({ propsData }) {
     } else {
       const updatedItems = [...SelectedItems];
       updatedItems[index] = {
-        // ...updatedItems[index],
+        ...updatedItems[index],
         U_PackageName: "",
         U_PackRate: "",
         U_Package: "",
@@ -593,7 +595,7 @@ function BidElement({ propsData }) {
       .finally(() => {
         setLoading(false);
       })
-      .catch(function (error) { });
+      .catch(function (error) {});
     setLoading(false);
   };
 
@@ -635,7 +637,7 @@ function BidElement({ propsData }) {
     console.log({ U_Package, index });
     submitPatch(U_Package, () => {
       setSelectedItems((prevItems) => {
-        return prevItems.filter((_, i) => i !== index);
+        return prevItems?.filter((_, i) => i !== index);
       });
       setContextMenu(null);
     });
@@ -858,7 +860,7 @@ function BidElement({ propsData }) {
                           handleSelectType(e.value, index);
                           handleSelect(e, index, e.value);
                         }}
-                        value={typesoptions.filter(
+                        value={typesoptions?.filter(
                           (option) => option.value === item.U_Type
                         )}
                         options={typesoptions}
@@ -867,8 +869,13 @@ function BidElement({ propsData }) {
                   </td>
 
                   <td>
-                    {(item.U_Package && populatedItemsLength > index) ||
-                      (item.U_Package && propsData) ? (
+                    {/* {(item.U_Package && populatedItemsLength > index) ||
+                    (item.U_Package && propsData) ? ( */}
+                    {item.U_Package &&
+                    populatedItemsLength > index &&
+                    selectedTypeList[index]?.filter(
+                      (list) => list.value === item?.U_Package
+                    ).length === 0 ? (
                       <>
                         <ImArrowRight
                           style={{ cursor: "pointer", marginRight: "6px" }}
