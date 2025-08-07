@@ -10,10 +10,8 @@ import {
   fixedtableheader,
   fixedtablerow,
 } from "../../Utils";
-import { cacheUtils } from "../../Utils/Caching";
 import { Table } from "react-bootstrap";
 import LINKS from "../../Utils/Links";
-import * as XLSX from "xlsx";
 import axios from "axios";
 import CustomModal from "../Common/Modal";
 import { useAlert } from "react-alert";
