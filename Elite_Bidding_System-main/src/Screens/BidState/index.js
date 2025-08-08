@@ -79,8 +79,12 @@ function Bidding() {
     "Lab Test Cost",
     "Unit Rate",
     "Direct Cost",
+    "Unit In-Direct",
     "In-Direct Cost",
+    "Unit Selling",
     "Selling Price",
+    "Unit BOQ Client",
+    "Total Amount Client",
     // "Amount",
   ];
 
@@ -112,6 +116,10 @@ function Bidding() {
     if (typeof str !== "string") return NaN;
     const cleanedStr = str.replace(/,/g, "");
     return parseFloat(cleanedStr);
+  }
+
+  function parseNumber(str) {
+    return typeof str === "string" ? (str.includes("Per") ? parseInt(str.split("Per")[1]) : 1) : null
   }
 
   const getAllOBEDItems = async (cook) => {
@@ -322,6 +330,13 @@ function Bidding() {
                           maximumFractionDigits: 2,
                         });
 
+                        prevDetails[index][checkIndex("Unit In-Direct")] = (0.2 * (convertToNumber(prevDetails[index][checkIndex("Unit Rate")]) || 0) || 0)?.toFixed(2);
+
+                        prevDetails[index][checkIndex("Unit BOQ Client")] = ((((prevDetails[index][checkIndex("Unit Selling")] || 0) / (prevDetails[index][checkIndex("Conversion")] || 0) || 0)) * parseNumber(prevDetails[index][checkIndex("Unit Client")]))?.toFixed(2);
+
+                        prevDetails[index][checkIndex("Total Amount Client")] = (((prevDetails[index][checkIndex("Quantity Client")] || 0) * (prevDetails[index][checkIndex("Unit BOQ Client")] || 0) || 0) / parseNumber(prevDetails[index][checkIndex("Unit Client")]))?.toFixed(2);
+
+                        prevDetails[index][checkIndex("Unit Selling")] = ((convertToNumber(prevDetails[index][checkIndex("Unit In-Direct")]) || 0) + (convertToNumber(prevDetails[index][checkIndex("Unit Rate")]) || 0))?.toFixed(2);
 
                         prevDetails[index][checkIndex("Total ManHours")] = Number((prevDetails[index][checkIndex("Quantity Client")] || 0) * (prevDetails[index][checkIndex("Standard ManHours")] || 0)).toFixed(2);
 
@@ -415,39 +430,46 @@ function Bidding() {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
+    try {
 
-      const jsonData = XLSX.utils.sheet_to_json(sheet, {
-        header: 1,
-        defval: "",
-      });
+      const file = e.target.files[0];
+      if (!file) new Error("No file Selected")
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
 
-      console.log(jsonData);
+        const jsonData = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+          defval: "",
+        });
 
-      const srNoRowIndex = jsonData.findIndex((row) => row[0] === "S No");
+        console.log(jsonData);
 
-      let filteredDataArray = [];
-      if (srNoRowIndex !== -1) {
-        filteredDataArray = jsonData?.slice(srNoRowIndex + 1);
-      } else {
-        filteredDataArray = jsonData;
-      }
+        const srNoRowIndex = jsonData.findIndex((row) => row[0] === "S No");
 
-      filteredDataArray = filteredDataArray.filter((row) =>
-        row.some((cell) => cell !== "")
-      );
-      console.log("filteredDataArray", filteredDataArray);
-      settabledetails(filteredDataArray);
-      let cook = localStorage.getItem("cookie");
-      getAllOBEDItems(cook);
-    };
-    reader.readAsArrayBuffer(file);
+        let filteredDataArray = [];
+        if (srNoRowIndex !== -1) {
+          filteredDataArray = jsonData?.slice(srNoRowIndex + 1);
+        } else {
+          filteredDataArray = jsonData;
+        }
+
+        filteredDataArray = filteredDataArray.filter((row) =>
+          row.some((cell) => cell !== "")
+        );
+        console.log("filteredDataArray", filteredDataArray);
+        settabledetails(filteredDataArray);
+        let cook = localStorage.getItem("cookie");
+        getAllOBEDItems(cook);
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (error) {
+      console.log("Error Reading File: " + error?.message);
+
+    }
   };
 
   const getvaluefrominput = (e) => {
@@ -971,6 +993,7 @@ function Bidding() {
         </button>
         <input
           type="file"
+           accept=".xlsx"
           ref={fileInputRef}
           style={{ display: "none" }}
           onChange={handleFileChange}
@@ -1344,10 +1367,22 @@ function Bidding() {
                     {item[checkIndex("Direct Cost")]}
                   </td>
                   <td className="text-right">
+                    {item[checkIndex("Unit In-Direct")]}
+                  </td>
+                  <td className="text-right">
                     {item[checkIndex("In-Direct Cost")]}
                   </td>
                   <td className="text-right">
+                    {item[checkIndex("Unit Selling")]}
+                  </td>
+                  <td className="text-right">
                     {item[checkIndex("Selling Price")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Unit BOQ Client")]}
+                  </td>
+                  <td className="text-right">
+                    {item[checkIndex("Total Amount Client")]}
                   </td>
                   {/* <td className="text-right">{item[checkIndex("Amount")]}</td> */}
                 </tr>
