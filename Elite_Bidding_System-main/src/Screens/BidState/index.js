@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Select from "react-select";
 import "./index.css";
 import { ImArrowRight } from "react-icons/im";
@@ -101,6 +101,7 @@ function Bidding() {
         getAllOBEDItems(cook);
       }
     }
+    // eslint-disable-next-line
   }, []);
 
   // Check index of field in tableHeaders
@@ -154,6 +155,7 @@ function Bidding() {
                     prevDetails.forEach((details, index) => {
                       if (details) {
                         if (
+                          // eslint-disable-next-line
                           details[checkIndex("BOQ Client Number")] ==
                           table_item.Code
                         ) {
@@ -161,18 +163,18 @@ function Bidding() {
                             item.U_Conversion;
 
                           prevDetails[index][checkIndex("Unit System")] =
-                            uomlist.find((list) => list.value == item.U_Unit)
+                            uomlist.find((list) => list.value === item.U_Unit)
                               ?.label || item.U_Unit;
                           const type = table_item.U_Type;
                           const selectedIndex = packageInfo.find((info) => {
                             const key = Object.keys(info)[0];
-                            return key == type;
+                            return key === type;
                           })?.[type];
 
                           const selectedCostIndex = packageCostInfo.find(
                             (info) => {
                               const key = Object.keys(info)[0];
-                              return key == type;
+                              return key === type;
                             }
                           )?.[type];
 
@@ -215,7 +217,7 @@ function Bidding() {
                         );
                         const Specialized = parseFloat(
                           item[
-                          checkIndex("Specialized/ Sub-Contract Unit Rate")
+                            checkIndex("Specialized/ Sub-Contract Unit Rate")
                           ]
                         );
                         const Labour = parseFloat(
@@ -322,9 +324,15 @@ function Bidding() {
                           maximumFractionDigits: 2,
                         });
 
-
-                        prevDetails[index][checkIndex("Total ManHours")] = Number((prevDetails[index][checkIndex("Quantity Client")] || 0) * (prevDetails[index][checkIndex("Standard ManHours")] || 0)).toFixed(2);
-
+                        prevDetails[index][checkIndex("Total ManHours")] =
+                          Number(
+                            (prevDetails[index][
+                              checkIndex("Quantity Client")
+                            ] || 0) *
+                              (prevDetails[index][
+                                checkIndex("Standard ManHours")
+                              ] || 0)
+                          ).toFixed(2);
                       }
                     });
                   }
@@ -374,7 +382,7 @@ function Bidding() {
       .finally(() => {
         setLoading(false);
       })
-      .catch(function (error) { });
+      .catch(function (error) {});
 
     setLoading(false);
   };
@@ -400,7 +408,7 @@ function Bidding() {
           setLoading(false);
         }
       })
-      .catch(function (error) { })
+      .catch(function (error) {})
       .finally(() => {
         setLoading(false);
       });
@@ -465,34 +473,34 @@ function Bidding() {
   const submit = async () => {
     console.log("tabledetails", tabledetails);
     console.log("headerdata", headerdata);
-    let details = [];
+    // let details = [];
     // Add submit logic as needed
   };
 
-  const PostInFirstDB = async (body) => {
-    let cook = await localStorage.getItem("cookie");
-    if (cook) {
-      await axios
-        .post(API_TYPES.POST, {
-          body: JSON.stringify(body),
-          api: `OEBS`,
-          cookie: cook,
-        })
-        .then(function (res) {
-          if (res.data.Code) {
-            alert.success("Operation completed successfully");
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
-          } else {
-            alert.error(JSON.stringify(res.data.error.message));
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  };
+  // const PostInFirstDB = async (body) => {
+  //   let cook = await localStorage.getItem("cookie");
+  //   if (cook) {
+  //     await axios
+  //       .post(API_TYPES.POST, {
+  //         body: JSON.stringify(body),
+  //         api: `OEBS`,
+  //         cookie: cook,
+  //       })
+  //       .then(function (res) {
+  //         if (res.data.Code) {
+  //           alert.success("Operation completed successfully");
+  //           setTimeout(() => {
+  //             window.location.reload();
+  //           }, 3000);
+  //         } else {
+  //           alert.error(JSON.stringify(res.data.error.message));
+  //         }
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //       });
+  //   }
+  // };
 
   const getmpvalues = (e, index, clientqty, ManHours) => {
     let data = selectedMP;
@@ -577,7 +585,8 @@ function Bidding() {
         if (res.data.value) {
           if (res.data.value?.length === 0) {
             alert.error(
-              `Nothing Found with '${id}' Code ${name ? "and Type '" + name + "'" : ""
+              `Nothing Found with '${id}' Code ${
+                name ? "and Type '" + name + "'" : ""
               }`
             );
           } else {
@@ -601,7 +610,7 @@ function Bidding() {
       .finally(() => {
         setLoading(false);
       })
-      .catch(function (error) { });
+      .catch(function (error) {});
   };
 
   const truncateLine = (value) => {
@@ -611,15 +620,16 @@ function Bidding() {
     else return `${value?.slice(0, 20)} ...`;
   };
 
-  const getTableInputValue = (e, index) => {
-    console.log(e.target.value, index);
-  };
+  // const getTableInputValue = (e, index) => {
+  //   console.log(e.target.value, index);
+  // };
 
   useEffect(() => {
     const data = Array.from({ length: tableHeaders.length }).map(() => "");
     settabledetails((prev) => {
       return prev?.length === 0 || !prev ? [data] : prev;
     });
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -1117,7 +1127,7 @@ function Bidding() {
                           {truncateLine(
                             item[checkIndex("Material Package")]
                               ?.U_PackageName ||
-                            item[checkIndex("Material Package")]?.U_Package
+                              item[checkIndex("Material Package")]?.U_Package
                           )}
                         </div>
                       </div>
@@ -1147,7 +1157,7 @@ function Bidding() {
                         {truncateLine(
                           item[checkIndex("Consumable Package")]
                             ?.U_PackageName ||
-                          item[checkIndex("Consumable Package")]?.U_Package
+                            item[checkIndex("Consumable Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1176,7 +1186,7 @@ function Bidding() {
                         {truncateLine(
                           item[checkIndex("Equipment Package")]
                             ?.U_PackageName ||
-                          item[checkIndex("Equipment Package")]?.U_Package
+                            item[checkIndex("Equipment Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1184,35 +1194,35 @@ function Bidding() {
                   <td>
                     {item[checkIndex("Specialized/ Sub-Contract")]
                       ?.U_Package && (
-                        <div
-                          className="inside_td"
-                          style={{ justifyContent: "left", padding: "2px 6px" }}
-                          title={
-                            item[checkIndex("Specialized/ Sub-Contract")]
-                              ?.U_PackageName ||
+                      <div
+                        className="inside_td"
+                        style={{ justifyContent: "left", padding: "2px 6px" }}
+                        title={
+                          item[checkIndex("Specialized/ Sub-Contract")]
+                            ?.U_PackageName ||
+                          item[checkIndex("Specialized/ Sub-Contract")]
+                            ?.U_Package
+                        }
+                      >
+                        <ImArrowRight
+                          style={{ cursor: "pointer", paddingRight: "8px" }}
+                          onClick={() => {
+                            handlePackageItemModal(
+                              item[checkIndex("Specialized/ Sub-Contract")]
+                                ?.U_Package,
+                              "S",
+                              true
+                            );
+                          }}
+                        />
+                        {truncateLine(
+                          item[checkIndex("Specialized/ Sub-Contract")]
+                            ?.U_PackageName ||
                             item[checkIndex("Specialized/ Sub-Contract")]
                               ?.U_Package
-                          }
-                        >
-                          <ImArrowRight
-                            style={{ cursor: "pointer", paddingRight: "8px" }}
-                            onClick={() => {
-                              handlePackageItemModal(
-                                item[checkIndex("Specialized/ Sub-Contract")]
-                                  ?.U_Package,
-                                "S",
-                                true
-                              );
-                            }}
-                          />
-                          {truncateLine(
-                            item[checkIndex("Specialized/ Sub-Contract")]
-                              ?.U_PackageName ||
-                            item[checkIndex("Specialized/ Sub-Contract")]
-                              ?.U_Package
-                          )}
-                        </div>
-                      )}
+                        )}
+                      </div>
+                    )}
                   </td>
                   <td>
                     {item[checkIndex("Labour Package")]?.U_Package && (
@@ -1236,7 +1246,7 @@ function Bidding() {
                         />
                         {truncateLine(
                           item[checkIndex("Labour Package")]?.U_PackageName ||
-                          item[checkIndex("Labour Package")]?.U_Package
+                            item[checkIndex("Labour Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1263,7 +1273,7 @@ function Bidding() {
                         />
                         {truncateLine(
                           item[checkIndex("Formwork Package")]?.U_PackageName ||
-                          item[checkIndex("Formwork Package")]?.U_Package
+                            item[checkIndex("Formwork Package")]?.U_Package
                         )}
                       </div>
                     )}
@@ -1290,7 +1300,7 @@ function Bidding() {
                         />
                         {truncateLine(
                           item[checkIndex("Lab Test Package")]?.U_PackageName ||
-                          item[checkIndex("Lab Test Package")]?.U_Package
+                            item[checkIndex("Lab Test Package")]?.U_Package
                         )}
                       </div>
                     )}

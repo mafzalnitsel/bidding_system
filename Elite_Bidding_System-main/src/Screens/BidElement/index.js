@@ -21,7 +21,7 @@ import ModalForMaterials from "../Common/ModalForMaterials";
 function BidElement({ propsData }) {
   const alert = useAlert();
   const codeRef = useRef();
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
   const [SelectedItems, setSelectedItems] = useState([{ abc: "abc" }]);
   const [headerdata, setheaderdata] = useState({ incomtax: "" });
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ function BidElement({ propsData }) {
   };
 
   function getDocTotal(array) {
-    if (array?.length == 0) return 0;
+    if (array?.length === 0) return 0;
     const stringArr = array.map((item) => item?.U_PackRate);
     const sum = stringArr.reduce((prev, next) => {
       const num = parseFloat(next);
@@ -57,21 +57,9 @@ function BidElement({ propsData }) {
     return sum ? sum?.toFixed() : 0;
   }
 
-  useEffect(() => {
-    let cook = localStorage.getItem("cookie");
-    if (cook) {
-      getunitofmeasure(cook);
-    }
-    if (propsData) {
-      setheaderdata(propsData);
-      setSelectedItems(propsData?.BED1Collection);
-      setdoctotal(getDocTotal(propsData?.BED1Collection));
-    }
-  }, []);
-
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
-  };
+  // const handleButtonClick = () => {
+  //   fileInputRef.current.click();
+  // };
 
   const getunitofmeasure = async (cook) => {
     // -------------------------    Items API GET DATA   ------------------------------------------------------
@@ -99,6 +87,19 @@ function BidElement({ propsData }) {
       })
       .catch(function (error) {});
   };
+
+  useEffect(() => {
+    let cook = localStorage.getItem("cookie");
+    if (cook) {
+      getunitofmeasure(cook);
+    }
+    if (propsData) {
+      setheaderdata(propsData);
+      setSelectedItems(propsData?.BED1Collection);
+      setdoctotal(getDocTotal(propsData?.BED1Collection));
+    }
+    // eslint-disable-next-line
+  }, [propsData]);
 
   const getvaluefrominput = (e) => {
     const { name, value } = e.target;
