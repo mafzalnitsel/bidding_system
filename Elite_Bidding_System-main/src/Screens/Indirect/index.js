@@ -1,21 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./index.css";
 import {
     Loader,
-    CustomSelect,
-    TableCustomStyle,
     Header,
-    fixedtablediv,
-    fixedtableheader,
-    fixedtablerow,
 } from "../../Utils";
 import { Table } from "react-bootstrap";
 import LINKS from "../../Utils/Links";
 import axios from "axios";
 import CustomModal from "../Common/Modal";
 import { useAlert } from "react-alert";
-import Select from "react-select";
-import MenuList from "../../Utils/MenuList";
 import IndirectCostStructure from "./Components/Common/IndirectCostStructure";
 
 function Indirect({ data }) {

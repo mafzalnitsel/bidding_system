@@ -1,6 +1,6 @@
 .indirect-cost-container {
     margin: 0 auto;
-    padding: 30px;
+    padding: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -9,7 +9,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .folder-title {
@@ -33,11 +33,13 @@
 }
 
 .folder-content {
-    padding: 10px 25px;
+    /* padding: 10px 25px; */
+    padding: 10px;
     background-color: #fff5f5;
 }
 
 .subfolder {
+    position: relative;
     margin: 10px 0;
     padding: 10px;
     background-color: #fefefe;
@@ -46,6 +48,8 @@
 }
 
 .subfolder-title {
+    position: sticky;
+    top: 0px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
@@ -53,6 +57,8 @@
     align-items: center;
     gap: 8px;
     color: #444;
+    background-color: #fff;
+    z-index: 100;
 }
 
 .subfolder-title:hover {
@@ -61,7 +67,7 @@
 
 .subfolder-content {
     margin-top: 5px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
     color: #555;
     font-size: 14px;
 }

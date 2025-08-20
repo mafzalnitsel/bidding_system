@@ -1,0 +1,18 @@
+In meeting (8 Aug 2025)
+
+Rental equipment module implimented based upon the rental equipment sheet by Mr.Faisal,
+
+--------------------
+
+In meeting (11 Aug 2025)
+
+Rental equipment module corrections, Reviewed by Faisal Sb,
+Today We got equipment sheet, implimenting Depriciation module
+
+--------------------
+
+
+In meeting (12 Aug 2025)
+
+Depriciation module done, got sheets for Contractor's All Risk Insurance
+Developing Sheet provided by Mr.Faisal

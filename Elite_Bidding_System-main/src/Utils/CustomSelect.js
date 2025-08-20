@@ -11,6 +11,7 @@ const customselect = {
     control: () => ({
         height: "1.6rem",
         width: " 13rem !important",
+        minWidth: "100%",
         cursor: " pointer !important",
         // display: " -webkit-box !important",
         // display: " -webkit-flex !important",
