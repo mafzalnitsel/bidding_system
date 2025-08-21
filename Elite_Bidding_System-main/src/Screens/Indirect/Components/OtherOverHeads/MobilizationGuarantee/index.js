@@ -96,15 +96,16 @@ const MobilizationGuarantee = () => {
     const calculateTotalRate = (row) =>
         toNumber(row.kibor) + toNumber(row.excessKibor);
 
+
     const calculateCommission = (row) =>
         calculateGuaranteeValue(row) *
         toNumber(row.bankCommissionRate) *
-        toNumber(row.years);
+        (toNumber(row.years) || 1);
 
     const calculateKibor = (row) =>
         calculateGuaranteeValue(row) *
         (calculateTotalRate(row) / 100) *
-        toNumber(row.years);
+        (toNumber(row.years) || 1);
 
     const calculateBankTotal = (row) =>
         calculateCommission(row) + calculateKibor(row);
