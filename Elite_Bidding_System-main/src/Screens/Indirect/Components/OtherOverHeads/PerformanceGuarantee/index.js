@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 
+const toNumber = (val, fallback = 0) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? fallback : num;
+};
+
 const PerformanceGuarantee = () => {
-    // --- Separate state hooks for each table ---
     const [bankRows, setBankRows] = useState([
         {
             source: "Bank",
@@ -30,20 +34,20 @@ const PerformanceGuarantee = () => {
 
     // --- Calculations ---
     const calculateGuaranteeValue = (row) =>
-        (row.projectValue * row.guaranteePercent) / 100;
+        (toNumber(row.projectValue) * toNumber(row.guaranteePercent)) / 100;
 
     const calculateTotalRate = (row) =>
-        parseFloat(row.kibor) + parseFloat(row.excessKibor);
+        toNumber(row.kibor) + toNumber(row.excessKibor);
 
     const calculateCommission = (row) =>
         calculateGuaranteeValue(row) *
-        parseFloat(row.bankCommissionRate) *
-        parseFloat(row.years);
+        toNumber(row.bankCommissionRate) *
+        toNumber(row.years);
 
     const calculateKibor = (row) =>
         calculateGuaranteeValue(row) *
         (calculateTotalRate(row) / 100) *
-        parseFloat(row.years);
+        toNumber(row.years);
 
     const calculateBankTotal = (row) =>
         calculateCommission(row) + calculateKibor(row);
@@ -52,7 +56,11 @@ const PerformanceGuarantee = () => {
 
     // --- Update row data ---
     const handleChange = (e, index, field, type) => {
-        const value = e.target.value;
+        let value = e.target.value;
+
+        if (e.target.type === "number") {
+            value = value === "" ? "" : toNumber(value);
+        }
 
         if (type === "Bank") {
             setBankRows((prev) => {
@@ -107,7 +115,7 @@ const PerformanceGuarantee = () => {
     // --- Table Renderer ---
     const renderTable = (rows, type) => (
         <div className="table-container">
-            <h3>{type} Table</h3>
+            <h3 className="main-heading">{type} Table</h3>
             <table className="data-table">
                 <thead>
                     <tr>
@@ -179,7 +187,7 @@ const PerformanceGuarantee = () => {
                                     onChange={(e) => handleChange(e, i, "excessKibor", type)}
                                 />
                             </td>
-                            <td>{calculateTotalRate(row)}%</td>
+                            <td>{calculateTotalRate(row).toLocaleString()}%</td>
                             {type === "Bank" && (
                                 <>
                                     <td>

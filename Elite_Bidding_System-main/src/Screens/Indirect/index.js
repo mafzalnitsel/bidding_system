@@ -345,7 +345,7 @@ function Indirect({ data }) {
             MMP1Collection: details,
         };
         console.log("body", body);
-        PostInFirstDB(body);
+        // PostInFirstDB(body);
     };
 
     const PostInFirstDB = async (body) => {
@@ -439,11 +439,11 @@ function Indirect({ data }) {
 
         console.log("patch body", body);
 
-        patch(headerdata.Code, body, callback);
+        // patch(headerdata.Code, body, callback);
     };
 
     const patch = async (id, body, callback) => {
-        let cook = await localStorage.getItem("cookie");
+        let cook = localStorage.getItem("cookie");
         if (cook) {
             await axios
                 .post(API_TYPES.PATCH, {

@@ -1,7 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
+const toNumber = (val, fallback = 0) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? fallback : num;
+};
+
+const emptyBankRow = {
+    source: "Bank",
+    customerName: "",
+    projectValue: "",
+    guaranteePercent: "",
+    years: "",
+    bankCommissionRate: "",
+    kibor: "",
+    excessKibor: "",
+};
+
+const emptyInsuranceRow = {
+    source: "Insurance Company",
+    customerName: "",
+    projectValue: "",
+    guaranteePercent: "",
+    years: "",
+    bankCommissionRate: "",
+    kibor: "",
+    excessKibor: "",
+};
 
 const MobilizationGuarantee = () => {
-    const defaultData = [
+    const [bankRows, setBankRows] = useState([
         {
             source: "Bank",
             customerName: "Riko Dik Project",
@@ -12,6 +39,9 @@ const MobilizationGuarantee = () => {
             kibor: 11,
             excessKibor: 2,
         },
+    ]);
+
+    const [insuranceRows, setInsuranceRows] = useState([
         {
             source: "Insurance Company",
             customerName: "Riko Dik Project",
@@ -22,52 +52,69 @@ const MobilizationGuarantee = () => {
             kibor: 11,
             excessKibor: 2,
         },
-    ];
+    ]);
 
-    const [tableData, setTableData] = useState(defaultData);
+    // --- Handle change ---
+    const handleChange = (e, index, field, type) => {
+        let value = e.target.value;
 
-    const handleChange = (e, index, field) => {
-        const value = e.target.value;
-        setTableData((prev) => {
-            const newData = [...prev];
-            newData[index][field] = value;
-            return newData;
-        });
+        if (e.target.type === "number") {
+            value = value === "" ? "" : toNumber(value);
+        }
+
+        if (type === "Bank") {
+            setBankRows((prev) => {
+                const newData = [...prev];
+                newData[index][field] = value;
+                return newData;
+            });
+        } else {
+            setInsuranceRows((prev) => {
+                const newData = [...prev];
+                newData[index][field] = value;
+                return newData;
+            });
+        }
+    };
+
+    // --- Add new row on Enter ---
+    const handleKeyDown = (e, type) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (type === "Bank") {
+                setBankRows((prev) => [...prev, { ...emptyBankRow }]);
+            } else {
+                setInsuranceRows((prev) => [...prev, { ...emptyInsuranceRow }]);
+            }
+        }
     };
 
     // --- Calculations ---
     const calculateGuaranteeValue = (row) =>
-        (row.projectValue * row.guaranteePercent) / 100;
+        (toNumber(row.projectValue) * toNumber(row.guaranteePercent)) / 100;
 
     const calculateTotalRate = (row) =>
-        parseFloat(row.kibor) + parseFloat(row.excessKibor);
+        toNumber(row.kibor) + toNumber(row.excessKibor);
 
     const calculateCommission = (row) =>
         calculateGuaranteeValue(row) *
-        parseFloat(row.bankCommissionRate) *
-        parseFloat(row.years);
+        toNumber(row.bankCommissionRate) *
+        toNumber(row.years);
 
     const calculateKibor = (row) =>
         calculateGuaranteeValue(row) *
         (calculateTotalRate(row) / 100) *
-        parseFloat(row.years);
+        toNumber(row.years);
 
-    // Bank: commission + kibor
     const calculateBankTotal = (row) =>
         calculateCommission(row) + calculateKibor(row);
 
-    // Insurance: only kibor
     const calculateInsuranceTotal = (row) => calculateKibor(row);
 
-    // --- Split data ---
-    const bankRows = tableData.filter((row) => row.source === "Bank");
-    const insuranceRows = tableData.filter(
-        (row) => row.source === "Insurance Company"
-    );
-
+    // --- Render ---
     const renderTable = (rows, type) => (
         <div className="table-container">
-            <h3>{type} Table</h3>
+            <h3 className="main-heading">{type} Table</h3>
             <table className="data-table">
                 <thead>
                     <tr>
@@ -93,28 +140,45 @@ const MobilizationGuarantee = () => {
                                 <input
                                     type="text"
                                     value={row.source}
-                                    onChange={(e) => handleChange(e, i, "source")}
+                                    onChange={(e) =>
+                                        handleChange(e, i, "source", type)
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
                             <td>
                                 <input
                                     type="text"
                                     value={row.customerName}
-                                    onChange={(e) => handleChange(e, i, "customerName")}
+                                    onChange={(e) =>
+                                        handleChange(e, i, "customerName", type)
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
                             <td>
                                 <input
                                     type="number"
                                     value={row.projectValue}
-                                    onChange={(e) => handleChange(e, i, "projectValue")}
+                                    onChange={(e) =>
+                                        handleChange(e, i, "projectValue", type)
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
                             <td>
                                 <input
                                     type="number"
                                     value={row.guaranteePercent}
-                                    onChange={(e) => handleChange(e, i, "guaranteePercent")}
+                                    onChange={(e) =>
+                                        handleChange(
+                                            e,
+                                            i,
+                                            "guaranteePercent",
+                                            type
+                                        )
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
                             <td>{calculateGuaranteeValue(row).toLocaleString()}</td>
@@ -122,24 +186,33 @@ const MobilizationGuarantee = () => {
                                 <input
                                     type="number"
                                     value={row.years}
-                                    onChange={(e) => handleChange(e, i, "years")}
+                                    onChange={(e) =>
+                                        handleChange(e, i, "years", type)
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
                             <td>
                                 <input
                                     type="number"
                                     value={row.kibor}
-                                    onChange={(e) => handleChange(e, i, "kibor")}
+                                    onChange={(e) =>
+                                        handleChange(e, i, "kibor", type)
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
                             <td>
                                 <input
                                     type="number"
                                     value={row.excessKibor}
-                                    onChange={(e) => handleChange(e, i, "excessKibor")}
+                                    onChange={(e) =>
+                                        handleChange(e, i, "excessKibor", type)
+                                    }
+                                    onKeyDown={(e) => handleKeyDown(e, type)}
                                 />
                             </td>
-                            <td>{calculateTotalRate(row)}%</td>
+                            <td>{calculateTotalRate(row).toLocaleString()}%</td>
                             {type === "Bank" && (
                                 <>
                                     <td>
@@ -147,7 +220,17 @@ const MobilizationGuarantee = () => {
                                             type="number"
                                             step="0.01"
                                             value={row.bankCommissionRate}
-                                            onChange={(e) => handleChange(e, i, "bankCommissionRate")}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    e,
+                                                    i,
+                                                    "bankCommissionRate",
+                                                    type
+                                                )
+                                            }
+                                            onKeyDown={(e) =>
+                                                handleKeyDown(e, type)
+                                            }
                                         />
                                     </td>
                                     <td>{calculateCommission(row).toLocaleString()}</td>
