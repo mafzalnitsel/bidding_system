@@ -125,10 +125,12 @@ select {
 .LEMZs {
   width: 22%;
 }
+
 .heading {
   text-align: center;
   color: #c32127;
 }
+
 .main_container {
   display: flex;
   /* width: 100%; */
@@ -137,6 +139,7 @@ select {
   padding: 0 33px;
   margin-bottom: 20px;
 }
+
 .table_container {
   justify-content: space-between;
   align-items: center;
@@ -164,6 +167,7 @@ select {
   border: none;
   cursor: pointer;
 }
+
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -173,6 +177,7 @@ select {
 .checkbox-group label {
   margin-right: 10px;
 }
+
 .dropup-menu {
   position: absolute;
   bottom: 100%;
@@ -199,33 +204,40 @@ select {
   color: #fff;
   background-color: #333;
 }
+
 .selectedRow {
   /* color: rgb(245, 201, 57); */
   font-size: 20px;
   cursor: "pointer";
 }
+
 .highlighted-row {
   background-color: yellow;
 }
+
 .table-container {
   max-height: 300px;
   overflow-y: auto;
 }
+
 .table {
   width: 100%;
   border-collapse: collapse;
 }
+
 .custom-modal {
   position: fixed;
   bottom: 10px;
   left: 10px;
   background-color: #858282;
 }
+
 thead.sticky-header {
   position: fixed;
   top: 0;
   background-color: white;
 }
+
 .form_button {
   font-size: 20px;
   /* font-size: clamp(8px, 2vw, 24px); */
@@ -237,6 +249,7 @@ thead.sticky-header {
   background-color: rgb(69, 70, 73);
   color: #ffffff;
 }
+
 .modalbutton_container {
   display: flex;
   justify-content: flex-end;
@@ -290,12 +303,14 @@ th div {
   justify-content: center;
   white-space: nowrap;
 }
+
 td .tableinside_td {
   white-space: nowrap;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 td .inside_td {
   min-width: 12rem;
   white-space: nowrap;
@@ -437,20 +452,24 @@ th .first_column {
   box-sizing: border-box !important;
   padding: 0 !important;
 }
+
 .css-1wa3eu0-placeholder {
   top: 75% !important;
   transform: translateY(-97%) !important;
 }
+
 .css-1uccc91-singleValue {
   top: 50% !important;
 
   /* font-size: clamp(10px, 2vw, 24px); */
   font-size: 10px !important;
 }
+
 .nav-tabs .nav-link.active {
   color: black !important;
   background-color: white !important;
 }
+
 .form-control {
   height: calc(1.5em + 0.75rem + -9px) !important;
   border: 1px solid #545658 !important;
@@ -462,6 +481,7 @@ th .custom_table_heading {
   background-color: #0b9fc8 !important;
   color: white !important;
 }
+
 .table td {
   padding: 0 !important;
   text-align: center !important;
@@ -477,9 +497,11 @@ th .custom_table_heading {
   align-items: center !important;
   margin: 2rem 2rem;
 }
+
 .custombutton:hover {
   background-color: #0b9fc8;
 }
+
 .custombutton {
   background-color: #c32127;
   padding: 0px;
@@ -487,6 +509,7 @@ th .custom_table_heading {
   padding-left: 13px;
   padding-right: 16px;
 }
+
 .test {
   background-color: red;
   color: white;
@@ -534,12 +557,23 @@ input.active.code_input:focus {
   background-color: #cc1f1a;
 }
 
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.percentage-padding {
+  padding: 2px 4px;
+}
+
 /* Fade-in animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);

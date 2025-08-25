@@ -674,6 +674,7 @@ function Indirect({ data }) {
         { label: "Material Package", value: "M" },
         { label: "Consumable Package", value: "C" },
         { label: "Equipment Package", value: "E" },
+        { label: "Crew Package", value: "CR" },
         // { label: "Specialized Package", value: "S" },
         { label: "Labour Package", value: "L" },
         { label: "Formwork Package", value: "FW" },

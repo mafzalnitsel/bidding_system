@@ -23,17 +23,33 @@ function WorkmenCompensationInsurance() {
     const [insuranceData, setInsuranceData] = useState(initialInsuranceData);
     const [total, setTotal] = useState(initialTotal);
     const [approxCost, setApproxCost] = useState("500,000,000");
-    const [contractPeriod, setContractPeriod] = useState("18 Months");
+    const [contractPeriod, setContractPeriod] = useState("18");
 
     // Handle input changes for table data
     const handleInputChange = (index, field, value) => {
         const updatedData = [...insuranceData];
         updatedData[index][field] = value;
+
+
+        if (field === "valueWC") {
+            updatedData[index].highAmount = (parseFloat(updatedData[index].highRate || 0) * parseFloat(value?.replace(/,/g, '') || 0)).toLocaleString()
+            updatedData[index].minAmount = (parseFloat(updatedData[index].minRate || 0) * parseFloat(value?.replace(/,/g, '') || 0)).toLocaleString()
+        }
+
+        if (field === "highRate") {
+            updatedData[index].highAmount = (parseFloat(value || 0) * parseFloat(updatedData[index].valueWC?.replace(/,/g, '') || 0)).toLocaleString()
+        }
+
+        if (field === "minRate") {
+            updatedData[index].minAmount = (parseFloat(value || 0) * parseFloat(updatedData[index].valueWC?.replace(/,/g, '') || 0)).toLocaleString()
+        }
+
+
         setInsuranceData(updatedData);
 
         // Recalculate totals
-        const newMinAmount = updatedData.reduce((sum, item) => sum + parseFloat(item.minAmount.replace(/,/g, '') || 0), 0);
-        const newHighAmount = updatedData.reduce((sum, item) => sum + parseFloat(item.highAmount.replace(/,/g, '') || 0), 0);
+        const newMinAmount = updatedData.reduce((sum, item) => sum + parseFloat(item.minAmount?.replace(/,/g, '') || 0), 0);
+        const newHighAmount = updatedData.reduce((sum, item) => sum + parseFloat(item.highAmount?.replace(/,/g, '') || 0), 0);
         setTotal({
             minAmount: newMinAmount.toLocaleString(),
             highAmount: newHighAmount.toLocaleString(),
@@ -46,9 +62,25 @@ function WorkmenCompensationInsurance() {
         if (field === "contractPeriod") setContractPeriod(value);
     };
 
+    const addBlankRow = (e) => {
+        if (e.key === 'Enter' && e.ctrlKey) {
+            e.preventDefault();
+            const newRow = {
+                qtrNo: insuranceData.length + 1,
+                particulars: "",
+                valueWC: "",
+                minRate: "",
+                minAmount: "",
+                highRate: "",
+                highAmount: "",
+            };
+            setInsuranceData(prev => [...prev, newRow]);
+        }
+    };
+
     return (
         <>
-            <div>
+            {/* <div>
                 <h1
                     style={{
                         textAlign: "center",
@@ -58,9 +90,9 @@ function WorkmenCompensationInsurance() {
                 >
                     PN Farm Sector D - Insurance Cost
                 </h1>
-            </div>
+            </div> */}
 
-            <div className="main_container" style={{ padding: "20px" }}>
+            <div className="main_container" style={{ padding: "20px", gap: "20px" }}>
                 <div className="header_items_container">
                     <label>
                         <strong>Approximate Cost:</strong>{" "}
@@ -68,42 +100,44 @@ function WorkmenCompensationInsurance() {
                             type="text"
                             value={approxCost}
                             onChange={(e) => handleHeaderChange("approxCost", e.target.value)}
-                            style={{ border: "1px solid #ccc", padding: "5px" }}
+                            style={{ border: "1px solid #eee", padding: "5px" }}
                         />
                     </label>
                 </div>
                 <div className="header_items_container">
                     <label>
-                        <strong>Contract Period:</strong>{" "}
+                        <strong>Contract Period (Months):</strong>
                         <input
                             type="text"
                             value={contractPeriod}
                             onChange={(e) => handleHeaderChange("contractPeriod", e.target.value)}
-                            style={{ border: "1px solid #ccc", padding: "5px" }}
+                            style={{ border: "1px solid #eee", padding: "5px" }}
                         />
                     </label>
                 </div>
                 <div className="header_items_container">
-                    <label><strong>Insurance Type:</strong> Workmen Compensation Insurance</label>
+                    <label><strong>Insurance Type:</strong> <div>
+                        Workmen Compensation Insurance
+                    </div></label>
                 </div>
             </div>
 
             <div className="table_container" style={{ margin: "20px", overflowX: "auto" }}>
                 <Table striped bordered hover className="table">
-                    <thead style={{ position: "sticky", top: 0 }}>
-                        <tr style={{ background: "#0b9fc8" }}>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>Sr. No.</th>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>PARTICULARS</th>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>Value of W.C.</th>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>Minimum Rate</th>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>Minimum Amount</th>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>Higher Side Rate</th>
-                            <th style={{ backgroundColor: "#0b9fc8", color: "white" }}>Higher Side Amount</th>
+                    <thead style={{ background: "#0b9fc8", color: "white", position: "sticky", top: 0 }}>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>PARTICULARS</th>
+                            <th>Value of W.C.</th>
+                            <th>Minimum Rate</th>
+                            <th>Minimum Amount</th>
+                            <th>Higher Side Rate</th>
+                            <th>Higher Side Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         {insuranceData.map((item, index) => (
-                            <tr key={index}>
+                            <tr key={index} onKeyDown={addBlankRow}>
                                 <td>
                                     <input
                                         type="text"
@@ -128,34 +162,40 @@ function WorkmenCompensationInsurance() {
                                         style={{ width: "100%", border: "none", background: "transparent" }}
                                     />
                                 </td>
-                                <td>
+                                <td className="flex-center">
                                     <input
-                                        type="text"
-                                        value={item.minRate}
+                                        type="number"
+                                        value={parseFloat(item.minRate || 0)}
+                                        step={"0.1"}
                                         onChange={(e) => handleInputChange(index, "minRate", e.target.value)}
                                         style={{ width: "100%", border: "none", background: "transparent" }}
                                     />
+                                    <span className="percentage-padding">%</span>
                                 </td>
                                 <td>
                                     <input
                                         type="text"
                                         value={item.minAmount}
+                                        disabled
                                         onChange={(e) => handleInputChange(index, "minAmount", e.target.value)}
                                         style={{ width: "100%", border: "none", background: "transparent" }}
                                     />
                                 </td>
-                                <td>
+                                <td className="flex-center">
                                     <input
-                                        type="text"
-                                        value={item.highRate}
+                                        type="number"
+                                        value={parseFloat(item.highRate || 0)}
+                                        step={"0.1"}
                                         onChange={(e) => handleInputChange(index, "highRate", e.target.value)}
                                         style={{ width: "100%", border: "none", background: "transparent" }}
                                     />
+                                    <span className="percentage-padding">%</span>
                                 </td>
                                 <td>
                                     <input
                                         type="text"
                                         value={item.highAmount}
+                                        disabled
                                         onChange={(e) => handleInputChange(index, "highAmount", e.target.value)}
                                         style={{ width: "100%", border: "none", background: "transparent" }}
                                     />
@@ -173,10 +213,14 @@ function WorkmenCompensationInsurance() {
             </div>
 
             <div className="notes_container" style={{ margin: "20px" }}>
+                <p style={{ fontStyle: "italic" }}>
+                    Press <strong>Ctrl + Enter</strong> to add a new row.
+                </p>
                 <p><strong>Notes:</strong></p>
                 <ol>
-                    <li>Above Amounts are calculated in case of project completion according to planned period of 18 Months.</li>
+                    <li>Above Amounts are calculated in case of project completion according to planned period of {contractPeriod || "18"} Months.</li>
                 </ol>
+
             </div>
         </>
     );

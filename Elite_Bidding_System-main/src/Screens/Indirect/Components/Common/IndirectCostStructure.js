@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './IndirectCostStructure.css';
-import OtherOverHeads from '../OtherOverHeads';
+import OtherOverHeads from '../OtherOverHeads/MiscOverheads';
 import RentalEquipments from '../ConstructionOverheads/RentalEquipments/index';
 import EquipmentManagement from '../ConstructionOverheads/DepriciationEquipments';
 import ContractorAllRiskGuarantee from '../ConstructionOverheads/ContractorAllRiskGuarantee';
